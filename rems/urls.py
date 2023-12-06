@@ -3,6 +3,7 @@ from django.urls import path,include
 from rest_framework_simplejwt import views as jwt_views
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from utils import authentication
 
 @csrf_exempt
 def not_found_view(request,*args, **kwargs):
@@ -14,9 +15,9 @@ urlpatterns = [
         path('api/', include([
             path('user/', include('user.urls')),
             path('<path:dummy>/', not_found_view),
-            # path('login',authentication.Login.as_view(),name='login'),
-            # path('signup',authentication.SignUp.as_view(),name='signup'),
-            # path('logout',authentication.Logout.as_view(),name='logout'),
+            path('login',authentication.Login.as_view(),name='login'),
+            path('signup',authentication.SignUp.as_view(),name='signup'),
+            path('logout',authentication.Logout.as_view(),name='logout'),
 
 
         ])),

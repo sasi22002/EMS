@@ -4,8 +4,33 @@ from django.contrib.auth.models import (
 )
 
 from utils.enum import GenderEnum
-from django.contrib.auth.models import BaseUserManager
+from django.db import transaction
 
+
+class UserManager(BaseUserManager):
+    
+    def _create_user(self, email, password, **extra_fields):
+        """
+        Creates and saves a User with the given email,and password.
+        """
+        if not email:
+            raise ValueError('The given email must be set')
+        try:
+            with transaction.atomic():
+                user = self.model(email=email, **extra_fields)
+                user.set_password(password)
+                user.save(using=self._db)
+                return user
+        except:
+            raise Exception('Model creation Error')
+
+    
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self._create_user(email, password=password, **extra_fields)
 
 
 class Role(models.Model):
@@ -39,6 +64,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(max_length=8,default=GenderEnum.Not_to_say.value,blank=True,null=True)
     profile_picture = models.TextField(null=True,blank=True)
     is_block = models.BooleanField(default= False)
+    is_staff =  models.BooleanField(default= False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True,null = True)
     updated_at = models.DateTimeField(auto_now=True,null = True)   
@@ -48,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = 'auth_master'
 
-    objects = BaseUserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'
     
