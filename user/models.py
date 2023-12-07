@@ -5,8 +5,20 @@ from django.contrib.auth.models import (
 
 from utils.enum import GenderEnum
 from django.db import transaction
+from utils.enum import RoleEnum
+import logging
 
 
+
+def save_user_role(role,user):
+    try:
+        user = UserRole.objects.update_or_create(role_id=role,user_id=user)
+        return user
+    except Exception as e:
+        logging.info(f"{e}: save_user_role")
+        raise Exception
+    
+    
 class UserManager(BaseUserManager):
     
     def _create_user(self, email, password, **extra_fields):
@@ -20,6 +32,9 @@ class UserManager(BaseUserManager):
                 user = self.model(email=email, **extra_fields)
                 user.set_password(password)
                 user.save(using=self._db)
+                
+                #SAVE RELATED ROLE
+                save_user_role(RoleEnum.superadmin.value,user.id)     
                 return user
         except:
             raise Exception('Model creation Error')

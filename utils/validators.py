@@ -4,7 +4,7 @@ from utils.enum import RoleEnum
 
 def signup_validator(data):
     try:
-        if data['role'] == RoleEnum.user.value:
+        if data['role'] == RoleEnum.tenant.value:
             json_keys=['username' ,'role',"email","phone_number","password","confirm_password"]
                    
         for val in json_keys:
@@ -19,7 +19,7 @@ def signup_validator(data):
 
 def socialsignup_validator(data):
     try:
-        if data['role'] == RoleEnum.user.value:
+        if data['role'] == RoleEnum.tenant.value:
             json_keys=['username' ,'role',"email","phone_number","social_id","social_type"]
           
         for val in json_keys:

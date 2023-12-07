@@ -56,3 +56,5 @@ user/__init__.py
 user/migrations/*
 db.sqlite3
 rems/__init__.py
+masteradmin/__init__.py
+masteradmin/migrations/*

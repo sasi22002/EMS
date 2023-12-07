@@ -2,7 +2,7 @@ from enum import Enum
 
 class RoleEnum(Enum):
     superadmin=1
-    user = 2
+    tenant = 2
 
 
 class GenderEnum(Enum):
@@ -25,18 +25,12 @@ class StaticEnum(Enum):
     forget_password_otp ="Otp"
     forget_password_email ="Email"
     email_verify ="EmailVerify"
-    forget_link="Link"
-    cash_on_hand ="COH"
-    pending = "Pending"
-    in_progress = "In-Progress"
-    admin = "Admin"
-    procurement = "Procurement"
-    new = "New"
-    requested = "Requested"
     timeformatT = "%Y-%m-%dT%H:%M:%S"
     accepted = "Accepted"
     completed = "Completed"
     rejected = "Rejected"
-    bussiness = 2
-    questions = 1
-    job = "Job"
+    
+class UnintsEnum(Enum):
+    one_bhk = "1BHK"
+    two_bhk = "2BHK"
+    three_bhk = "3BHK"

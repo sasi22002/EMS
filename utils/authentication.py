@@ -83,9 +83,9 @@ class Login(APIView):
                 res = {'status':False,'message':Message.enter_password,'data':[],'screen_staus':None}
                 return Response(res,status=status.HTTP_400_BAD_REQUEST)
             
-            email = User.objects.filter(email=email,userrole_user__role_id=role,is_active=True,social_id__isnull=True).prefetch_related('userrole_user').last() 
+            email = User.objects.filter(email=email,userrole_user__role_id=role,is_active=True).prefetch_related('userrole_user').last() 
             if role==RoleEnum.superadmin.value:
-                email = User.objects.filter(email=request.data['email'],is_deleted=False).last() 
+                email = User.objects.filter(email=request.data['email'],is_active=True).last() 
                 
             if not email:
                 res = {'status':False,'message':Message.register_mail,'data':[]}
@@ -94,7 +94,7 @@ class Login(APIView):
             #AUTH FUNCTION TO LOGIN
             if role == RoleEnum.superadmin.value:
                 user = authenticate(request, email=email.email, password=password)
-            if role == RoleEnum.user.value:           
+            if role == RoleEnum.tenant.value:           
                 user = authenticate(request, email=email.email, password=password)
                                             
             if user is None:

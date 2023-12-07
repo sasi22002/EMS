@@ -79,7 +79,8 @@ INSTALLED_APPS = [
     'django_user_agents',
     'corsheaders',
     'rest_framework',
-    'user'
+    'user',
+    'masteradmin'
     ]
 
 MIDDLEWARE = [

@@ -16,6 +16,8 @@ class Message:
     registerd_success = "Registered successfully"
     signup = "Signedup successfully"
     logout_success = "Logout successfully"
+    unit_listed = "Unit listed successfully"
+    property_created = "Property created successfully"
     
     
     #exceptions
