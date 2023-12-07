@@ -90,6 +90,7 @@ class TenantProperty(models.Model):
         models : Model for save the Tenant Informations
     """
     tenant=models.ForeignKey(TenantProfile,related_name='tenant_profile',null=False,on_delete=models.CASCADE)
+    property=models.ForeignKey(PropertyUnits,related_name='tenant_property_unit',null=True,on_delete=models.CASCADE)
     aggrement_date = models.DateTimeField(null=False)
     duration_days = models.IntegerField(default=0)
     aggrement_enddate = models.DateTimeField(null=False)

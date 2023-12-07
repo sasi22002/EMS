@@ -20,9 +20,15 @@ class Message:
     property_created = "Property created successfully"
     property_exist = "Property already exists with this ULPIN number"
     check_property = "Please check property details"
-    property_unit_exist = "Please check the propert units"
+    property_unit_exist = "Please check the property units"
     property_listed_successfuly = "Property listed successfully"
     tenant_created = "Tenant created successfully"
+    tenant_property_exist = "Tenant is already mapped with this property"
+    tenant_property_mapped = "Tenant and properties are mapped"
+    tenanat_not_found = "Tenant not found"
+    property_not_found = "Property not found"
+    tenanat_listed = "Tenant listed successfully"
+    tenant_viewed = "Tenant viewed successfully"
     
     
     #exceptions

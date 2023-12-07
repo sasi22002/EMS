@@ -5,11 +5,14 @@ from django.db import transaction
 from utils.response_message import Message
 from utils.decorator import *
 from rest_framework.views import APIView
-from masteradmin.models import  UnitMaster,PropertyMaster,PropertyUnits,TenantProfile
-from .serializers import PropertySerializer,TenantProfileSerializer
+from masteradmin.models import  UnitMaster,PropertyMaster,PropertyUnits,TenantProfile,TenantProperty
+from .serializers import PropertySerializer,TenantProfileSerializer,TenantDetailSerializer
 from utils.helpers import generate_uniqueids,has_duplicates
 from utils.utils import save_user
 from utils.pagination import pagination_class
+from django.utils.dateparse import parse_datetime
+from datetime import timedelta
+
 class ManageUnits(APIView):
     permission_classes=[permissions.IsAuthenticated]
     
@@ -78,7 +81,20 @@ class ManageProperty(APIView):
         try:
             #API TO LIST THE ALL PROPERTY DETAILS
             property = PropertyMaster.objects.filter(is_active=True).order_by('-id')
+            
+            #VIEW SINGLE PROPERTY ONLY
+            ID = request.query_params.get('id')
+            if ID:
+                property = PropertyMaster.objects.filter(id=ID)
+                if not property:
+                    res = {'status':False,'message':Message.property_not_found,'data':[]}
+                    return Response(res,status=status.HTTP_400_BAD_REQUEST) 
                     
+                propert_data = PropertySerializer(property,many=True).data                
+                res = {'status':True,'message':Message.property_listed_successfuly,'data':propert_data}
+                return Response(res,status=status.HTTP_200_OK)             
+            
+            #LIST ALL PROPERTY
             pagination_result = pagination_class(self,queryset=property,request=request)
             propert_data = PropertySerializer(pagination_result['data'],many=True).data
                   
@@ -97,11 +113,28 @@ class ManageTenants(APIView):
     @super_admin_permission
     def get(self,request):
         try:
-            tenant = TenantProfile.objects.filter(is_active=True).order_by('-id')         
+            ID = request.query_params.get('id')
+            if ID:
+                tenant = TenantProfile.objects.filter(id=ID,is_active=True)
+                if not tenant:
+                    res = {'status':False,'message':Message.tenanat_not_found,'data':[]}
+                    return Response(res,status=status.HTTP_400_BAD_REQUEST)     
+                tenant_data = TenantDetailSerializer(tenant,many=True).data
+                
+                res = {'status':True,'message':Message.tenant_viewed,'data':tenant_data}
+                return Response(res,status=status.HTTP_200_OK)  
+
+            #LIST ALL TENANT PROFILE
+            search = request.query_params.get('search')
+            if search:
+                tenant = TenantProfile.objects.filter(Q(tenant_profile__property__unit__unit_name__icontains=search)|Q(tenant_profile__property__property__property_name__icontains=search)).prefetch_related('tenant_profile')    
+            else:
+                tenant = TenantProfile.objects.filter(is_active=True).order_by('-id')     
+                    
             pagination_result = pagination_class(self,queryset=tenant,request=request)
-            tenant_data = TenantProfileSerializer(pagination_result['data'],many=True).data
+            tenant_data = TenantDetailSerializer(pagination_result['data'],many=True).data
                               
-            res = {'status':True,'message':Message.property_listed_successfuly,'data':tenant_data,'total_page':pagination_result['total_pages'], 'total_count':pagination_result['total_count']}
+            res = {'status':True,'message':Message.tenanat_listed,'data':tenant_data,'total_page':pagination_result['total_pages'], 'total_count':pagination_result['total_count']}
             return Response(res,status=status.HTTP_200_OK)          
             
         except Exception as e:
@@ -140,5 +173,47 @@ class ManageTenants(APIView):
             
         except Exception as e:
             logging.info(f"{e}: ManageTenants - get",exc_info=True)
+            res = {'status':False,'message':Message.server_error,'data':[]}
+            return Response(res,status=status.HTTP_400_BAD_REQUEST)
+        
+        
+class ManageTenantProperty(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    @super_admin_permission
+    def post(self,request):
+        """
+        API FOR MAP TENANT WITH RESPECTIVE PROPERTY
+        """
+        try:
+            data = request.data
+            
+            #CHECK MAPPING EXISTS
+            for val in data['properties']:
+                if TenantProperty.objects.filter(tenant_id=data['tenant'],property_id=val['property'],is_active=True).exists():
+                    res = {'status':False,'message':Message.tenant_property_exist,'data':[]}
+                    return Response(res,status=status.HTTP_400_BAD_REQUEST)
+                pass
+            
+            #CHECK DUPLICATE PROPERTY
+            if has_duplicates(data['properties'],"property"):
+                res = {'status':False,'message':Message.property_unit_exist,'data':[]}
+                return Response(res,status=status.HTTP_400_BAD_REQUEST)
+            
+            if len(data['properties'])==0:
+                res = {'status':False,'message':Message.check_property,'data':[]}
+                return Response(res,status=status.HTTP_400_BAD_REQUEST)
+            
+            for val in data['properties']:          
+                enddate = parse_datetime(val['aggrement_date'])  + timedelta(days=val['duration_days'])        
+                
+                TenantProperty.objects.create(tenant_id=data['tenant'],property_id=val['property'],aggrement_date=val['aggrement_date'],duration_days=val['duration_days'],
+                                monthly_rent=val['monthly_rent'],aggrement_enddate=enddate)
+                
+            res = {'status':True,'message':Message.tenant_property_mapped,'data':[]}
+            return Response(res,status=status.HTTP_200_OK)
+                
+        except Exception as e:
+            logging.info(f"{e}: ManageTenantProperty - post",exc_info=True)
             res = {'status':False,'message':Message.server_error,'data':[]}
             return Response(res,status=status.HTTP_400_BAD_REQUEST)
