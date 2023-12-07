@@ -5,6 +5,7 @@ from masteradmin import views
 urlpatterns = [
     path('manage_property',views.ManageProperty.as_view(),name='manage_property'),
     path('list_units',views.ManageUnits.as_view(),name='list_units'),
+    path('manage_tenant',views.ManageTenants.as_view(),name='manage_tenant'),
 
        
     ]

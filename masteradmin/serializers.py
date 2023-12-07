@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from masteradmin.models import PropertyMaster,PropertyUnits
+from masteradmin.models import PropertyMaster,PropertyUnits,TenantProfile
+from user.serializers import UserSerializer
 
 class PropertySerializer(serializers.ModelSerializer):
 
@@ -18,3 +19,19 @@ class PropertySerializer(serializers.ModelSerializer):
         return data
         
   
+
+class TenantProfileSerializer(serializers.ModelSerializer):
+
+    class Meta(object):
+        model = TenantProfile
+        fields ='__all__'
+        
+    def to_representation(self, instance):
+        # Get the serialized data
+        data = super().to_representation(instance)
+        try:
+            data['user_data'] = UserSerializer(instance.user).data
+        except:
+            data['user_data'] =  []
+            
+        return data

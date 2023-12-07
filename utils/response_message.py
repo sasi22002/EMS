@@ -22,6 +22,7 @@ class Message:
     check_property = "Please check property details"
     property_unit_exist = "Please check the propert units"
     property_listed_successfuly = "Property listed successfully"
+    tenant_created = "Tenant created successfully"
     
     
     #exceptions
