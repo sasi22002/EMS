@@ -4,6 +4,7 @@ from django.core.mail import EmailMessage
 from utils.enum import RoleEnum
 from utils.enum import StaticEnum
 from user.models import User,UserRole,UserSession
+from masteradmin.models import PropertyMaster
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 import json,logging,traceback,sys
@@ -261,3 +262,31 @@ def generate_password():
         password+= ''.join(random.choice(alphabet))
     return password
 
+
+
+def generate_uniqueids():
+    try:
+        prop_id = PropertyMaster.objects.filter(property_code__isnull=False).last()        
+        count = 1
+        while count < 10:
+            prop_id = prop_id.property_code[5:]
+            prop_id = int(prop_id) + count
+            prop_id = '{:01}'.format(prop_id)
+            prop_id = "REMS_" + str(prop_id)
+            count += 1
+            if PropertyMaster.objects.filter(property_code=prop_id).count() == 0:
+                break
+        return prop_id
+    
+    except Exception as e:
+        prop_id = "REMS_" + "1"
+        return prop_id
+    
+def has_duplicates(data,val):
+    seen_ids = set()
+    for entry in data:
+        unit_id = entry.get(val)
+        if unit_id in seen_ids:
+            return True  # Duplicate found
+        seen_ids.add(unit_id)
+    return False  # No duplicates found

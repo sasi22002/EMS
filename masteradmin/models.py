@@ -12,9 +12,9 @@ class PropertyMaster(models.Model):
     
     property_name = models.TextField(null=False)
     property_code = models.CharField(null=False,max_length=25)
-    ul_pin = models.CharField(null=False,max_length=20)
-    pincode = models.BigIntegerField(null=False)
-    address = models.TextField(null=False)
+    ul_pin = models.CharField(null=True,max_length=20)
+    pincode = models.BigIntegerField(null=True)
+    address = models.TextField(null=True)
     lattitude = models.CharField(max_length=96,null=True)
     longtitude = models.CharField(max_length=96,null=True)
     features = models.JSONField(null=True)

@@ -18,6 +18,10 @@ class Message:
     logout_success = "Logout successfully"
     unit_listed = "Unit listed successfully"
     property_created = "Property created successfully"
+    property_exist = "Property already exists with this ULPIN number"
+    check_property = "Please check property details"
+    property_unit_exist = "Please check the propert units"
+    property_listed_successfuly = "Property listed successfully"
     
     
     #exceptions

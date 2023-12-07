@@ -14,6 +14,7 @@ urlpatterns = [
         path('admin/', admin.site.urls),
         path('api/', include([
             path('user/', include('user.urls')),
+            path('admin/', include('masteradmin.urls')),
             path('<path:dummy>/', not_found_view),
             path('login',authentication.Login.as_view(),name='login'),
             path('signup',authentication.SignUp.as_view(),name='signup'),
