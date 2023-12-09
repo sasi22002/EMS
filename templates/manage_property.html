@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property List</title>
+</head>
+<body>
+
+<h1>Property List</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Property Name</th>
+            <th>Property Code</th>
+            <!-- Add more table headers as needed -->
+        </tr>
+    </thead>
+    <tbody id="propertyTableBody">
+        <!-- The fetched data will be displayed here -->
+    </tbody>
+</table>
+
+<script>
+    const token = localStorage.getItem('authToken');
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Make an API call to fetch property data
+        fetch('http://127.0.0.1:8000/api/admin/manage_property?page=1&item=1', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        })
+    .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle the API response and update the table
+            console.log(data,'ooopoop')
+            updatePropertyTable(data);
+        })
+        .catch(error => {
+            console.error('API Request Error:', error);
+        });
+});
+
+function updatePropertyTable(data) {
+    // Get the table body element
+    const tableBody = document.getElementById('propertyTableBody');
+
+    // Clear existing rows
+    tableBody.innerHTML = '';
+
+    // Iterate through the data and add rows to the table
+    data.forEach(item => {
+        const row = document.createElement('tr');
+        console.log(item,'iiiiii')
+
+        // Create cells for each property in the item
+        const idCell = document.createElement('td');
+        idCell.textContent = item.id;
+        row.appendChild(idCell);
+
+        const nameCell = document.createElement('td');
+        nameCell.textContent = item.property_name;
+        row.appendChild(nameCell);
+
+        const codeCell = document.createElement('td');
+        codeCell.textContent = item.property_code;
+        row.appendChild(codeCell);
+
+        // Add more cells as needed
+
+        // Append the row to the table body
+        tableBody.appendChild(row);
+    });
+}
+</script>
+
+</body>
+</html>

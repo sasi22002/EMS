@@ -24,6 +24,7 @@ class Message:
     property_listed_successfuly = "Property listed successfully"
     tenant_created = "Tenant created successfully"
     tenant_property_exist = "Tenant is already mapped with this property"
+    property_exist_another_tenant = "Property already exist for another tenant"
     tenant_property_mapped = "Tenant and properties are mapped"
     tenanat_not_found = "Tenant not found"
     property_not_found = "Property not found"

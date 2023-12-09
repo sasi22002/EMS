@@ -12,6 +12,7 @@ from utils.utils import save_user
 from utils.pagination import pagination_class
 from django.utils.dateparse import parse_datetime
 from datetime import timedelta
+from utils.swagger_doc import *
 
 class ManageUnits(APIView):
     permission_classes=[permissions.IsAuthenticated]
@@ -33,6 +34,7 @@ class ManageProperty(APIView):
     permission_classes=[permissions.IsAuthenticated]
     
     @transaction.atomic()
+    @manage_property_post #SWAGGER DOCS
     def post(self,request):
         try:
             data=request.data
@@ -77,6 +79,7 @@ class ManageProperty(APIView):
             return Response(res,status=status.HTTP_400_BAD_REQUEST)
         
     @super_admin_permission
+    @manage_property_get #SWAGGER DOCS
     def get(self,request):
         try:
             #API TO LIST THE ALL PROPERTY DETAILS
@@ -111,6 +114,7 @@ class ManageTenants(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     @super_admin_permission
+    @manage_tenant_get #SWAGGER DOCS
     def get(self,request):
         try:
             ID = request.query_params.get('id')
@@ -143,6 +147,7 @@ class ManageTenants(APIView):
             return Response(res,status=status.HTTP_400_BAD_REQUEST)
         
     @super_admin_permission
+    @manage_tenant_post  #SWAGGER DOCS
     def post(self,request):
         try:
             #API FOR CREATE A NEW TENANT
@@ -181,6 +186,7 @@ class ManageTenantProperty(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
     @super_admin_permission
+    @manage_tenant_propertypost #SWAGGER DOCS
     def post(self,request):
         """
         API FOR MAP TENANT WITH RESPECTIVE PROPERTY
@@ -192,6 +198,10 @@ class ManageTenantProperty(APIView):
             for val in data['properties']:
                 if TenantProperty.objects.filter(tenant_id=data['tenant'],property_id=val['property'],is_active=True).exists():
                     res = {'status':False,'message':Message.tenant_property_exist,'data':[]}
+                    return Response(res,status=status.HTTP_400_BAD_REQUEST)
+                
+                if TenantProperty.objects.filter(property_id=val['property'],is_active=True).exclude(tenant_id=data['tenant']).exists():
+                    res = {'status':False,'message':Message.property_exist_another_tenant,'data':[]}
                     return Response(res,status=status.HTTP_400_BAD_REQUEST)
                 pass
             

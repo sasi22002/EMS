@@ -11,11 +11,34 @@ from rest_framework.views import APIView
 from utils.helpers import login_details
 from utils.utils import save_user
 from user.models import UserSession
+from utils.swagger_doc import login,signup
+from django.views.decorators.csrf import csrf_exempt
+import requests
+
+
+
+# your_app/views.py
+
+from django.shortcuts import render
+
+@csrf_exempt
+def login_page(request):
+    return render(request, 'login.html')
+
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+
+def manage_property(request):
+            
+    return render(request, 'manage_property.html')
 
 class SignUp(APIView):
     permission_classes=[permissions.AllowAny]
     
     @transaction.atomic()
+    @signup #SWAGGER DOCS
     def post(self,request):
         try:
             data=request.data
@@ -69,6 +92,9 @@ class Login(APIView):
     Login for All users    
     """
     permission_classes = [permissions.AllowAny]
+        
+    @csrf_exempt
+    @login #SWAGGER DOCS
     def post(self,request):
         try:
             email= request.data['email']          

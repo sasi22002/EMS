@@ -1,0 +1,71 @@
+<!-- your_app/templates/dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #ddd;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+        }
+
+        main {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Real Esate Management System!</h1>
+    </header>
+
+    <nav>
+        <a href="{% url 'manage-property' %}" onclick="getproperty()" >Manage Properties</a>
+        <a href="{% url 'login' %}">Manage Tenants</a>
+        <a href="{% url 'login' %}">Map Tenant-Property</a>
+    </nav>
+
+    <main>
+        <!-- Main content goes here -->
+        <p>This is the main content of your dashboard.</p>
+    </main>
+    <script>
+        function getproperty() {            
+            window.location.href = '/dashboard/';
+        }
+    </script>
+
+</body>
+</html>
