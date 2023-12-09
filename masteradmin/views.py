@@ -244,9 +244,9 @@ class ListAPi(APIView):
             type_ = request.query_params.get('type')
             
             if type_:#show tenant list
-                data = User.objects.filter().values('id','username')
+                data = TenantProfile.objects.filter().values('id','user__username')
             else:
-                data = PropertyMaster.objects.filter().values('id','property_name')
+                data = PropertyUnits.objects.filter().values('id','property__property_name')
                 
             res = {'status':True,'message':'success','data':data}
             return Response(res,status=status.HTTP_200_OK)               
