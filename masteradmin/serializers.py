@@ -15,10 +15,14 @@ class PropertyUnitSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         try:
             tenant = TenantProperty.objects.filter(property_id=instance.id).last()
-            data['tenant_info'] = TenantProfile.objects.filter(id=tenant.tenant.id).values() if tenant else []
+            data['tenant_info'] = TenantProfile.objects.filter(id=tenant.tenant.id).values('id', 'user_id','user_id__username' ,'document', 'is_docs_verified', 'occupation', 'is_salaried', 'own_business', 'is_active', 'created_at', 'updated_at') if tenant else []
+            data['unit'] = instance.unit.unit_name
+
             
         except:
             data['tenant_info'] =  []
+            data['unit'] = instance.unit.unit_name
+
             
         return data
     
