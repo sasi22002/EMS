@@ -7,6 +7,7 @@ urlpatterns = [
     path('list_units',views.ManageUnits.as_view(),name='list_units'),
     path('manage_tenant',views.ManageTenants.as_view(),name='manage_tenant'),
     path('manage_tenant_property',views.ManageTenantProperty.as_view(),name='manage_tenant_property'),
+    path('list_data',views.ListAPi.as_view(),name='list_data'),
 
        
     ]

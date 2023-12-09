@@ -85,6 +85,13 @@ class ManageProperty(APIView):
             #API TO LIST THE ALL PROPERTY DETAILS
             property = PropertyMaster.objects.filter(is_active=True).order_by('-id')
             
+            SEARCH = request.query_params.get('search')
+            if SEARCH:
+                property = PropertyMaster.objects.filter(Q(property_name__icontains=SEARCH)|Q(property_code__icontains=SEARCH)|Q(ul_pin__icontains=SEARCH)|
+                                        Q(pincode__icontains=SEARCH)|Q(address__icontains=SEARCH)).order_by('-id')
+
+
+            
             #VIEW SINGLE PROPERTY ONLY
             ID = request.query_params.get('id')
             if ID:
@@ -225,5 +232,24 @@ class ManageTenantProperty(APIView):
                 
         except Exception as e:
             logging.info(f"{e}: ManageTenantProperty - post",exc_info=True)
+            res = {'status':False,'message':Message.server_error,'data':[]}
+            return Response(res,status=status.HTTP_400_BAD_REQUEST)
+        
+        
+class ListAPi(APIView):
+    permission_classes = [permissions.AllowAny]
+    
+    def get(self,request):
+        try:
+            type_ = request.query_params.get('type')
+            
+            if type_:#show tenant list
+                data = User.objects.filter().values('id','username')
+            else:
+                data = PropertyMaster.objects.filter().values('id','property_name')
+                
+            res = {'status':True,'message':'success','data':data}
+            return Response(res,status=status.HTTP_200_OK)               
+        except print(0):
             res = {'status':False,'message':Message.server_error,'data':[]}
             return Response(res,status=status.HTTP_400_BAD_REQUEST)
