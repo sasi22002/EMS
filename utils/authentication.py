@@ -13,7 +13,6 @@ from utils.utils import save_user
 from user.models import UserSession
 from utils.swagger_doc import login,signup
 from django.views.decorators.csrf import csrf_exempt
-import requests
 
 
 
