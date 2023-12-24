@@ -44,6 +44,7 @@ environment="development"
 <!-- Commands to create above datas: -->
     1.python manage.py create_role  --- NOTE -> roles are mentioned in ENUM file /utils/enum.py
     2.python manage.py create_units
+    3.python manage.py createsuperadmin
 
 
 ### Launching the app
@@ -134,3 +135,10 @@ ADMIN_USERNAME=""
 SERVER_URL="http://127.0.0.1:8000/"
 
 -->
+
+# I HAVE ADDED A SWAGGER APIS FOR REFERENCE
+
+CLICK THE SERVER LINK WITH -swagger path
+ex:http://127.0.0.1:8000/swagger/
+
+

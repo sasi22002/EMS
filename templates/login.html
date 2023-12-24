@@ -68,6 +68,8 @@
     <h2>Login Page</h2>
 
     <form id="loginForm">
+        {% csrf_token %}
+
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" required>
 

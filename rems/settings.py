@@ -102,6 +102,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'rems.urls'
 
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_USE_SESSIONS = True
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
